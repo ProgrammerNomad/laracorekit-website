@@ -1,143 +1,23 @@
-# LaraCoreKit
+# LaraCoreKit website
 
-**A modular Laravel foundation for your public website and admin workspace.**
+Promotional website, documentation viewer and disposable demo for [the main LaraCoreKit starter](https://github.com/ProgrammerNomad/LaraCoreKit). This repository preserves the previous website implementation and history. It is not the source package to register on Packagist.
 
-This is the main LaraCoreKit project repository: source development, documentation, demo website, screenshots, issues and contributions belong here.
+## Plesk handover
 
-Laravel 13 · Filament 5 · Livewire 4 · Tailwind CSS 4 · PHP 8.3+ · MIT
-
-[Packagist](https://packagist.org/packages/programmernomad/laracorekit) · [Demo website](https://www.laracorekit.com) · [Documentation](https://www.laracorekit.com/docs) · [Installation](docs/installation.md) · [Security policy](SECURITY.md)
-
-## See the public site and admin
-
-![LaraCoreKit walkthrough: public site, blog, administration and documentation](docs/images/screenshots/walkthrough.gif)
-
-Real views from the disposable demonstration application. The package includes an editable starter homepage and the component showcase. The project marketing website, documentation viewer, sample content and reset controls remain host features.
-
-## Install with Composer (recommended)
-
-Install the published public frontend and Filament admin bundle in a fresh Laravel 13 application:
-
-The `create-project` command installs Laravel and initializes its `.env`, application key and default SQLite database. Run the remaining commands inside `my-app`. `composer require` and `laracorekit:install` alone assume Laravel already exists and do not create the complete demo website.
+Connect the existing laracorekit.com Git deployment to this repository, branch main. Keep the existing .env, database and persistent storage. Point the document root at public/. Do not create a new application key for an existing deployment or reset its database.
 
 ```bash
-composer create-project laravel/laravel my-app "~13.0"
-cd my-app
-composer require programmernomad/laracorekit:"~0.2.0"
-php artisan laracorekit:install
-```
-
-Configure your database, application URL and mail in `.env`, then:
-
-```bash
-php artisan migrate
-php artisan laracorekit:admin
-php artisan storage:link
-php artisan serve
-```
-
-Visit `/` for the starter homepage, `/ui-showcase` for components, `/blog`, `/login` and `/admin`. Prebuilt assets ship with the package; the default package UI does not require npm. [Full installation and customization guide](docs/installation.md).
-
-![Editable homepage included with the Composer package](docs/images/screenshots/starter-homepage.png)
-
-## Package and demo are separate
-
-The reusable package **`programmernomad/laracorekit`** is maintained in [`packages/core`](packages/core) and exported to the supporting [Composer distribution repository, laracorekit-package](https://github.com/ProgrammerNomad/laracorekit-package). It includes public authentication/blog pages, Filament administration, users, permissions, settings and media.
-
-The optional [demo module](https://packagist.org/packages/programmernomad/laracorekit-demo-module) stays separate. Clone this monorepo to explore the demo or contribute; use the Composer installation above for your own application.
-
-## Run the complete GitHub host
-
-Requires Composer 2, PHP 8.3+ and Node 22.12+ (CI uses Node 24).
-
-```bash
-git clone https://github.com/ProgrammerNomad/LaraCoreKit.git my-app
-cd my-app
-php -r "copy('.env.example', '.env');"
-composer install
-```
-
-Laravel is already included in this checkout; do not run `composer create-project` here. Set `APP_URL=http://127.0.0.1:8000` in `.env`. The following local setup uses the default SQLite connection; create its empty database file first. For MySQL, configure your database and credentials instead.
-
-```bash
-php artisan key:generate
-php -r "file_exists('database/database.sqlite') || touch('database/database.sqlite');"
-php artisan migrate --seed
-php artisan laracorekit:admin
-php artisan storage:link
+composer install --no-dev --prefer-dist --optimize-autoloader
 npm ci
 npm run build:core
 npm run build
-php artisan serve
+php artisan migrate --force
+php artisan storage:link
+php artisan optimize
 ```
 
-Normal seeding creates roles, not public sample accounts. Only a disposable demo instance should enable `DEMO_MODE=true` and run the guarded DemoSeeder. Never use demo credentials in production.
+Back up the database before migrations. An existing storage link does not need recreating. Preserve any intentional demo-only environment configuration. Verify homepage, docs, showcase, admin login and scheduled resets after deployment. Use staging before changing the live deployment.
 
-## What is included
+The website retains its bundled packages/core path dependency to keep this preserved snapshot deployable independently of the main starter restructuring. Website-specific copy, screenshots and docs presentation belong here; reusable starter changes belong in the main repository. Sync applicable fixes deliberately rather than assuming both copies update automatically.
 
-| Public frontend | Admin and infrastructure |
-| --- | --- |
-| Login and password recovery | Filament administration |
-| Optional registration and account dashboard | Users, roles and permissions |
-| Public multilingual blog | Blog authoring and publication |
-| English, Hindi and Arabic language switching | Settings and media attachments |
-| RTL-aware shared layout | Configurable modules and view overrides |
-
-API tokens, enforced email verification, billing, tenancy and a marketplace are not bundled. Check [architecture](docs/core/architecture.md) and [production setup](docs/deployment/production.md) before adopting.
-
-## Screenshots
-
-| Public website | Filament administration |
-| --- | --- |
-| ![Public homepage](docs/images/screenshots/homepage.png) | ![Admin dashboard](docs/images/screenshots/admin-dashboard.png) |
-| ![Public blog](docs/images/screenshots/blog.png) | ![Documentation](docs/images/screenshots/documentation.png) |
-| ![Component showcase](docs/images/screenshots/ui-showcase.png) | ![Mobile navigation](docs/images/screenshots/mobile-navigation.png) |
-
-Screenshots show the local demonstration application, including host-only features. Open any image for the full view. See [capture instructions](docs/SCREENSHOT_GUIDE.md) to reproduce the screenshots and GIF.
-
-## Development and validation
-
-```bash
-composer test
-composer pint-test
-composer phpstan
-composer audit --locked
-npm audit
-npm run build:core
-npm run build
-```
-
-See [contribution guidelines](CONTRIBUTING.md), [upgrade guide](docs/upgrade-guide.md), and [package release checklist](docs/package-release.md). Keep changes to package code in `packages/core`; site-specific changes belong in the host. Published assets must be rebuilt when their source changes.
-
-## Adoption and privacy
-
-No registration, activation or telemetry is required. Packagist downloads measure distribution activity, not unique developers or active projects. The host includes a validated daily snapshot command and optional scheduler configuration; see [release and metrics setup](docs/package-release.md). Contributions, issues and voluntary showcase submissions are welcome. Search engines and AI tools can read server-rendered docs and `/llms.txt`; no ranking or recommendation is promised.
-
-## License
-
-[MIT](LICENSE). Report sensitive vulnerabilities through the [security policy](SECURITY.md).
-
-## Editable frontend and component library (v0.2)
-
-The normal `laracorekit:install` command now installs the frontend too. On a fresh Laravel application, `/` shows your starter homepage with a responsive header, footer, language menu, light/dark theme and links to the blog and component library. `/ui-showcase` includes the existing example pages, copyable source, charts and sortable examples. These are UI examples; commerce, payments and other example-specific backend behavior are not implemented by preview markup.
-
-Edit these application-owned files:
-
-- `resources/views/home.blade.php`: homepage sections, copy and links.
-- `resources/views/vendor/core/layouts/app.blade.php`: shared header, footer, logo and navigation.
-- `.env`: your `APP_NAME`, `APP_URL` and other environment settings.
-- `resources/views/vendor/showcase/`: editable component examples after running `php artisan vendor:publish --tag=laracorekit-showcase-views`.
-
-The installer does not overwrite edited views or custom routes. Only Laravel's unchanged default welcome route is replaced; its backup is `routes/web.php.laracorekit-backup`. For a custom application, resolve the existing `/` route yourself and point it at `Route::view('/', 'home')->name('home');`. Clear cached routes with `php artisan optimize:clear` after changing them. Use `--without-frontend` to skip publishing starter views and changing the welcome route. Set `showcase.enabled=false` in `config/laracorekit.php` to disable the component library routes.
-
-Default views use prebuilt assets and need no npm build. When adding Tailwind utility classes that are not present in the shipped stylesheet, compile your application's Tailwind CSS and load it in the published layout; never edit files in `vendor`. Laravel view overrides also let you customize individual blog/auth pages using `php artisan vendor:publish --tag=laracorekit-views`.
-
-### Upgrade from 0.1 without recreating your application
-
-```bash
-composer require programmernomad/laracorekit:"~0.2.0"
-php artisan laracorekit:install
-php artisan optimize:clear
-```
-
-Keep your existing database and administrator. Do not rerun `create-project` or reset the database. If you previously published a custom layout, it stays unchanged: compare it with the new package layout and merge the header/footer/theme features you want. The starter is an application foundation, not a copy of the project's promotional website or demo reset service.
+The main starter is transitioning to `composer create-project programmernomad/laracorekit my-app` with editable application modules. Do not advertise that command as available until Packagist indexes the main repository's 1.0 project release.

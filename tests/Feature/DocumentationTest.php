@@ -29,7 +29,7 @@ class DocumentationTest extends TestCase
     public function test_homepage_describes_both_frontend_and_admin_and_release_status(): void
     {
         $this->get('/')->assertOk()->assertSee('Public frontend + admin.')
-            ->assertSee('Available on Packagist')->assertSee('Install with Composer')
+            ->assertSee('Starter release: Packagist cutover pending')->assertSee('Install with Composer')
             ->assertDontSee('Release preparation')->assertSee('SoftwareSourceCode', false);
     }
 
